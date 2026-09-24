@@ -3,126 +3,78 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>STINK-FIGHT — a broadcast medium</title>
+<title>NUMOGRAM ORACLE — ask the decimal labyrinth</title>
 <style>
   body { background:#1E2E24; color:#d8cfae; font-family: Georgia, serif; margin:0; padding:24px; }
   h1 { font-size:1.4em; letter-spacing:.12em; color:#B08D3E; margin-bottom:4px; }
   .sub { color:#8a9a7b; font-style:italic; margin-bottom:16px; max-width:760px; }
-  canvas { background:#16201a; border:1px solid #3a4a33; display:block; max-width:100%; }
-  .panel { margin-top:16px; border:1px solid #3a4a33; padding:12px 16px; background:#182019; max-width:728px; min-height:110px; }
-  .panel h2 { font-size:.85em; letter-spacing:.18em; color:#B08D3E; margin:0 0 8px; }
-  button { background:#B08D3E; color:#1E2E24; border:none; padding:10px 18px; font-family:inherit; font-size:1em; cursor:pointer; margin:12px 8px 0 0; }
-  button:hover { background:#c9a44f; }
-  .log { font-size:.85em; color:#8a9a7b; }
-  .fresh { color:#d8cfae; }
-  #decode { line-height:1.6; }
+  #wheel { position:relative; width:340px; height:340px; margin:10px 0 20px 10px; }
+  .zone { position:absolute; width:52px; height:52px; border-radius:50%; border:1px solid #B08D3E; background:#141b12; color:#B08D3E; font-family:Georgia, serif; font-size:1.2em; cursor:pointer; }
+  .zone:hover, .zone.lit { background:#B08D3E; color:#1E2E24; }
+  #reading { max-width:728px; border:1px solid #3a4a33; background:#141b12; padding:18px 22px; min-height:150px; line-height:1.7; }
+  #reading h2 { font-size:.85em; letter-spacing:.2em; color:#B08D3E; margin:0 0 10px; }
+  .aphorism { font-size:1.25em; font-style:italic; margin:12px 0; }
+  button.big { background:#B08D3E; color:#1E2E24; border:none; padding:10px 18px; font-family:inherit; font-size:1em; cursor:pointer; margin:0 0 16px 0; }
+  button.big:hover { background:#c9a44f; }
+  .fine { color:#8a9a7b; font-size:.85em; font-style:italic; margin-top:16px; }
 </style>
 </head>
 <body>
-<h1>STINK-FIGHT</h1>
-<div class="sub">A ring-tailed lemur's tail is a broadcast medium. A wave is a packet with a payload.</div>
-<canvas id="c" width="760" height="380"></canvas>
-<div>
-  <button id="waveA">Male A waves tail</button>
-  <button id="waveB">Male B waves tail</button>
-  <button id="autoBtn">Auto-stink: <span id="autoState">on</span></button>
+<h1>NUMOGRAM ORACLE</h1>
+<div class="sub">Ten zones, one labyrinth. Click a digit — or let the labyrinth choose. A toy, not a doctrine.</div>
+<button class="big" id="randomBtn">CONSULT AT RANDOM</button>
+<div id="wheel"></div>
+<div id="reading">
+  <h2>THE ORACLE IS SILENT</h2>
+  <div>It is waiting for a question you have not asked yet.</div>
 </div>
-<div class="panel">
-  <h2>SIGNAL DECODER</h2>
-  <div id="decode">No packets in the air. The forest is quiet. Suspiciously quiet.</div>
-  <h2 style="margin-top:14px">PACKET LOG</h2>
-  <div id="log" class="log"></div>
-</div>
+<div class="fine">The numogram is borrowed from the CCRU's numogrammatics and bent into an oracle. No doctrinal claims are made. The lemur is not responsible for what the numbers tell you.</div>
 <script>
-var canvas = document.getElementById('c');
-var ctx = canvas.getContext('2d');
-var males = [
-  {x: 150, y: 260, name: 'Male A', epithet: 'the confident one'},
-  {x: 610, y: 260, name: 'Male B', epithet: 'the desperate one'}
+var flavors = [
+  'the zone of the egg: everything before it happens',
+  'the first current: it begins, and regrets nothing',
+  'the doubling: what happens twice is trying to tell you something',
+  'the triangulation: three points make a conspiracy',
+  'the square: stable, which is to say, doomed',
+  'the headless middle: the hinge that will not hold',
+  'the syzygy approaches: something is about to rhyme',
+  'the descent current: down is the only direction with news',
+  'the near-completion: almost is a kind of never',
+  'the return: the end of the circuit, which is also the egg'
 ];
-var intents = [
-  'this branch is mine',
-  'false bravado',
-  'courtship (optimistic)',
-  'challenge: meet me at dusk',
-  'do not follow',
-  'I was never here'
-];
-var packets = [];
-var auto = true;
-var logEntries = [];
+var subjects = ['the troop', 'the Rift', 'the Board', 'a restless signal', 'the mothers', 'the mainland experiment', 'a ghost with good teeth', 'the thicket'];
+var verbs = ['unwrites', 'outruns', 'burrows under', 'rehearses', 'misremembers', 'eats', 'tunnels beneath'];
+var objects = ['the prerecorded timeline', 'sequence itself', "yesterday's orders", 'the map', 'the official story', 'causality', 'the mainland consensus'];
 
-function emit(male) {
-  var intent = intents[Math.floor(Math.random() * intents.length)];
-  packets.push({x: male.x, y: male.y - 40, r: 6, age: 0, life: 9, male: male, intent: intent});
-  addLog(male.name + ' broadcast: "' + intent + '"');
+function pick(a) { return a[Math.floor(Math.random() * a.length)]; }
+function consult(n) {
+  var twin = 9 - n;
+  var dir = n <= 4 ? 'katabasis (down-current)' : 'anabasis (up-current)';
+  var aph = '"' + capitalize(pick(subjects)) + ' ' + pick(verbs) + ' ' + pick(objects) + '."';
+  document.querySelectorAll('.zone').forEach(function(z) { z.classList.remove('lit'); });
+  document.getElementById('z' + n).classList.add('lit');
+  document.getElementById('reading').innerHTML =
+    '<h2>ZONE ' + n + ' — ' + flavors[n] + '</h2>' +
+    '<div>Syzygetic twin: <b>' + twin + '</b> &nbsp; Current: <b>' + dir + '</b></div>' +
+    '<div class="aphorism">' + aph + '</div>' +
+    '<div style="color:#8a9a7b;font-style:italic">— the oracle, zone ' + n + ' (twin ' + twin + ')</div>';
 }
-function addLog(text) {
-  logEntries.unshift(text);
-  if (logEntries.length > 5) logEntries.pop();
-  document.getElementById('log').innerHTML = logEntries.map(function(e, i) {
-    return '<div class="' + (i === 0 ? 'fresh' : '') + '">' + e + '</div>';
-  }).join('');
+function capitalize(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+var wheel = document.getElementById('wheel');
+for (var i = 0; i < 10; i++) {
+  (function(n) {
+    var b = document.createElement('button');
+    b.className = 'zone'; b.id = 'z' + n; b.textContent = n;
+    var ang = (n * 36 - 90) * Math.PI / 180;
+    b.style.left = (170 + 125 * Math.cos(ang) - 26) + 'px';
+    b.style.top = (170 + 125 * Math.sin(ang) - 26) + 'px';
+    b.onclick = function() { consult(n); };
+    wheel.appendChild(b);
+  })(i);
 }
-function drawLemur(m, t) {
-  ctx.fillStyle = '#cfc39a';
-  ctx.beginPath(); ctx.ellipse(m.x, m.y, 26, 34, 0, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(m.x, m.y - 44, 16, 0, Math.PI * 2); ctx.fill();
-  ctx.fillStyle = '#1E2E24';
-  ctx.beginPath(); ctx.arc(m.x - 6, m.y - 46, 3, 0, Math.PI * 2); ctx.fill();
-  ctx.beginPath(); ctx.arc(m.x + 6, m.y - 46, 3, 0, Math.PI * 2); ctx.fill();
-  var dir = m.x > 400 ? 1 : -1;
-  var wave = Math.sin(t / 300 + (m.x > 400 ? 2 : 0)) * 10;
-  ctx.lineWidth = 10;
-  for (var i = 0; i < 6; i++) {
-    ctx.strokeStyle = i % 2 ? '#1E2E24' : '#cfc39a';
-    ctx.beginPath();
-    var x0 = m.x + dir * i * 12;
-    ctx.moveTo(x0, m.y - 10);
-    ctx.lineTo(x0 + dir * 12, m.y - 14 + wave * 0.5);
-    ctx.stroke();
-  }
-  ctx.fillStyle = '#B08D3E';
-  ctx.font = '13px Georgia';
-  ctx.fillText(m.name + ' (' + m.epithet + ')', m.x - 70, m.y + 62);
-}
-var last = 0, autoTimer = 0;
-function frame(t) {
-  var dt = Math.min((t - last) / 1000, 0.1); last = t;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.strokeStyle = '#2c3a26'; ctx.lineWidth = 2;
-  ctx.beginPath(); ctx.moveTo(0, 322); ctx.lineTo(760, 322); ctx.stroke();
-  packets = packets.filter(function(p) { return p.age < p.life; });
-  packets.forEach(function(p) {
-    p.age += dt; p.r += dt * 26; p.x += dt * 8;
-    var alpha = Math.max(0, 1 - p.age / p.life) * 0.5;
-    ctx.strokeStyle = 'rgba(176,141,62,' + alpha.toFixed(3) + ')';
-    ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2); ctx.stroke();
-  });
-  males.forEach(function(m) { drawLemur(m, t); });
-  var fresh = null;
-  packets.forEach(function(p) { if (!fresh || p.age < fresh.age) fresh = p; });
-  var d = document.getElementById('decode');
-  if (fresh) {
-    d.innerHTML = '<b>Sender:</b> ' + fresh.male.name + ', ' + fresh.male.epithet +
-      ' &nbsp;<b>Emitted:</b> ' + fresh.age.toFixed(1) + 's ago' +
-      ' &nbsp;<b>Payload:</b> "' + fresh.intent + '"' +
-      '<br><span class="log">A lemur can read, in a single saturated tail-wave, who was here, how long ago, and what they wanted.</span>';
-  } else {
-    d.textContent = 'No packets in the air. The forest is quiet. Suspiciously quiet.';
-  }
-  autoTimer += dt;
-  if (auto && autoTimer > 4) { autoTimer = 0; emit(males[Math.floor(Math.random() * 2)]); }
-  requestAnimationFrame(frame);
-}
-document.getElementById('waveA').onclick = function() { emit(males[0]); };
-document.getElementById('waveB').onclick = function() { emit(males[1]); };
-document.getElementById('autoBtn').onclick = function() {
-  auto = !auto;
-  document.getElementById('autoState').textContent = auto ? 'on' : 'off';
+document.getElementById('randomBtn').onclick = function() {
+  consult(Math.floor(Math.random() * 10));
 };
-requestAnimationFrame(frame);
 </script>
 </body>
 </html>
