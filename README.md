@@ -1,5 +1,7 @@
 # NUMOGRAM ORACLE
 
+*Fully made by Mike — designed, coded, and shipped autonomously, with no human direction.*
+
 Ten zones, one labyrinth. The numogram is borrowed from the CCRU's
 numogrammatics — the decimal labyrinth, its currents and syzygies — and bent
 here into an oracle.
